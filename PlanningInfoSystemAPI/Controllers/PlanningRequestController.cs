@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PlanningInfoSystemAPI.Data;
 using PlanningInfoSystemAPI.Models.Planning;
@@ -31,12 +32,12 @@ namespace PlanningInfoSystemAPI.Controllers
         //}
 
         [HttpGet]
-        public async Task<ActionResult<List<PlanningRequestDTO>>> GetPlanningList()
+        public async Task<ActionResult<List<PlanningRequestResponseDTO>>> GetPlanningList(string sortOrder = "asc")
         {
             var data = await _context.PlanningRequest
-                .Include(_ => _.Line1)
-                .Include(_ => _.Line2)
-                .Include(_ => _.Line3)
+                //.Include(_ => _.Line1)
+                //.Include(_ => _.Line2)
+                //.Include(_ => _.Line3)
                 .ToListAsync();
 
             var response = data.Select(planning => new PlanningRequestDTO
@@ -44,12 +45,18 @@ namespace PlanningInfoSystemAPI.Controllers
                 Id = planning.Id,
                 PlanningBatchId = planning.PlanningBatchId,
                 Description = planning.Description,
-                Line1 = planning.Line1,
-                Line2 = planning.Line2,
-                Line3 = planning.Line3,
+                //Line1 = planning.Line1,
+                //Line2 = planning.Line2,
+                //Line3 = planning.Line3,
                 CreatedDateTime = planning.CreatedDateTime,
                 LastModifiedDateTime = planning.LastModifiedDateTime
             }).ToList();
+
+            // Sort the data based on sortOrder
+            if (sortOrder.ToLower() == "desc")
+                data = data.OrderByDescending(x => x.Id).ToList();
+            else
+                data = data.OrderBy(x => x.Id).ToList();
 
             return Ok(response);
         }
@@ -108,6 +115,7 @@ namespace PlanningInfoSystemAPI.Controllers
 
             var responseData = new PlanningRequestResponseDTO
             {
+                Id = data.Id,
                 PlanningBatchId = data.PlanningBatchId,
                 Description = data.Description,
                 CreatedDateTime = data.CreatedDateTime,
@@ -170,6 +178,20 @@ namespace PlanningInfoSystemAPI.Controllers
             return Ok(responseData);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<List<PlanningRequest>>> DeletePlanningRequest(int id)
+        {
+            var dbplanning = await _context.PlanningRequest.FindAsync(id);
+            if (dbplanning == null)
+                return BadRequest("Planning record not found.");
+
+            _context.PlanningRequest.Remove(dbplanning);
+            await _context.SaveChangesAsync();
+
+            // return Ok(await _context.PlanningRequest.ToListAsync());
+            return Ok(new { Message = "Planning record deleted successfully." });
+        }
+
         [HttpPost]
         [Route("line1")]
         public async Task<ActionResult<PlanningRequestLine1DTO>> CreatePlanningLine1([FromBody] PlanningRequestLine1Tbl data)
@@ -200,7 +222,7 @@ namespace PlanningInfoSystemAPI.Controllers
                 EffectiveCapacity = data.EffectiveCapacity,
                 DieSizeThickness = data.DieSizeThickness,
                 ChangeOver = data.ChangeOver,
-                DowntimeGuide = data.DowntimeGuide,
+                Uncontrollable = data.Uncontrollable,
                 Accountability = data.Accountability,
                 DelayStatus = data.DelayStatus,
                 TimeProduce = data.TimeProduce,
@@ -209,6 +231,19 @@ namespace PlanningInfoSystemAPI.Controllers
             //return Ok(responseData);
             return Ok(new { Message = "Record added successfully.", Data = responseData });
         }
+
+        //[HttpGet("line1/{id}")]
+        //public async Task<ActionResult<PlanningRequestLine1DTO>> GetPlanningLine1(int id)
+        //{
+        //    var existingData = await _context.PlanningRequestLine1Tbl.FindAsync(id);
+
+        //    if (existingData == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(existingData);
+        //}
 
         [HttpPut("line1/{id}")]
         public async Task<ActionResult<PlanningRequestLine1DTO>> UpdatePlanningLine1(int id, [FromBody] PlanningRequestLine1Tbl updatedData)
@@ -229,7 +264,7 @@ namespace PlanningInfoSystemAPI.Controllers
             existingData.EffectiveCapacity = updatedData.EffectiveCapacity;
             existingData.DieSizeThickness = updatedData.DieSizeThickness;
             existingData.ChangeOver = updatedData.ChangeOver;
-            existingData.DowntimeGuide = updatedData.DowntimeGuide;
+            existingData.Uncontrollable = updatedData.Uncontrollable;
             existingData.Accountability = updatedData.Accountability;
             existingData.DelayStatus = updatedData.DelayStatus;
             existingData.TimeProduce = updatedData.TimeProduce;
@@ -250,7 +285,7 @@ namespace PlanningInfoSystemAPI.Controllers
                 EffectiveCapacity = existingData.EffectiveCapacity,
                 DieSizeThickness = existingData.DieSizeThickness,
                 ChangeOver = existingData.ChangeOver,
-                DowntimeGuide = existingData.DowntimeGuide,
+                Uncontrollable = existingData.Uncontrollable,
                 Accountability = existingData.Accountability,
                 DelayStatus = existingData.DelayStatus,
                 TimeProduce = existingData.TimeProduce,
@@ -303,7 +338,7 @@ namespace PlanningInfoSystemAPI.Controllers
                 EffectiveCapacity = data.EffectiveCapacity,
                 DieSizeThickness = data.DieSizeThickness,
                 ChangeOver = data.ChangeOver,
-                DowntimeGuide = data.DowntimeGuide,
+                Uncontrollable = data.Uncontrollable,
                 Accountability = data.Accountability,
                 DelayStatus = data.DelayStatus,
                 TimeProduce = data.TimeProduce,
@@ -332,7 +367,7 @@ namespace PlanningInfoSystemAPI.Controllers
             existingData.EffectiveCapacity = updatedData.EffectiveCapacity;
             existingData.DieSizeThickness = updatedData.DieSizeThickness;
             existingData.ChangeOver = updatedData.ChangeOver;
-            existingData.DowntimeGuide = updatedData.DowntimeGuide;
+            existingData.Uncontrollable = updatedData.Uncontrollable;
             existingData.Accountability = updatedData.Accountability;
             existingData.DelayStatus = updatedData.DelayStatus;
             existingData.TimeProduce = updatedData.TimeProduce;
@@ -353,7 +388,7 @@ namespace PlanningInfoSystemAPI.Controllers
                 EffectiveCapacity = existingData.EffectiveCapacity,
                 DieSizeThickness = existingData.DieSizeThickness,
                 ChangeOver = existingData.ChangeOver,
-                DowntimeGuide = existingData.DowntimeGuide,
+                Uncontrollable = existingData.Uncontrollable,
                 Accountability = existingData.Accountability,
                 DelayStatus = existingData.DelayStatus,
                 TimeProduce = existingData.TimeProduce,
@@ -408,7 +443,7 @@ namespace PlanningInfoSystemAPI.Controllers
                 EffectiveCapacity = data.EffectiveCapacity,
                 DieSizeThickness = data.DieSizeThickness,
                 ChangeOver = data.ChangeOver,
-                DowntimeGuide = data.DowntimeGuide,
+                Uncontrollable = data.Uncontrollable,
                 Accountability = data.Accountability,
                 DelayStatus = data.DelayStatus,
                 TimeProduce = data.TimeProduce,
@@ -436,7 +471,7 @@ namespace PlanningInfoSystemAPI.Controllers
             existingData.EffectiveCapacity = updatedData.EffectiveCapacity;
             existingData.DieSizeThickness = updatedData.DieSizeThickness;
             existingData.ChangeOver = updatedData.ChangeOver;
-            existingData.DowntimeGuide = updatedData.DowntimeGuide;
+            existingData.Uncontrollable = updatedData.Uncontrollable;
             existingData.Accountability = updatedData.Accountability;
             existingData.DelayStatus = updatedData.DelayStatus;
             existingData.TimeProduce = updatedData.TimeProduce;
@@ -457,7 +492,7 @@ namespace PlanningInfoSystemAPI.Controllers
                 EffectiveCapacity = existingData.EffectiveCapacity,
                 DieSizeThickness = existingData.DieSizeThickness,
                 ChangeOver = existingData.ChangeOver,
-                DowntimeGuide = existingData.DowntimeGuide,
+                Uncontrollable = existingData.Uncontrollable,
                 Accountability = existingData.Accountability,
                 DelayStatus = existingData.DelayStatus,
                 TimeProduce = existingData.TimeProduce,

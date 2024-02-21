@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\fpestoque\\APIs\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI.csproj": {}
+    "C:\\Users\\fpestoque\\APIs\\PlanningInfoSystemAPI_v2\\pis-api\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\fpestoque\\APIs\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI.csproj": {
+    "C:\\Users\\fpestoque\\APIs\\PlanningInfoSystemAPI_v2\\pis-api\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\fpestoque\\APIs\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI.csproj",
+        "projectUniqueName": "C:\\Users\\fpestoque\\APIs\\PlanningInfoSystemAPI_v2\\pis-api\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI.csproj",
         "projectName": "PlanningInfoSystemAPI",
-        "projectPath": "C:\\Users\\fpestoque\\APIs\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI.csproj",
+        "projectPath": "C:\\Users\\fpestoque\\APIs\\PlanningInfoSystemAPI_v2\\pis-api\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI.csproj",
         "packagesPath": "C:\\Users\\fpestoque\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\fpestoque\\APIs\\PlanningInfoSystemAPI\\PlanningInfoSystemAPI\\obj\\",
+        "outputPath": "C:\\Users\\fpestoque\\APIs\\PlanningInfoSystemAPI_v2\\pis-api\\PlanningInfoSystemAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -50,6 +50,10 @@
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
               "version": "[12.0.1, )"
+            },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[7.0.9, )"
             },
             "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",

@@ -111,5 +111,19 @@ namespace PlanningInfoSystemAPI.Controllers
             // return Ok(await _context.DowntimeGuide.ToListAsync());
             return Ok(new { Message = "Downtime record deleted successfully." });
         }
+
+        [HttpDelete("delete-multiple")]
+        public async Task<ActionResult> DeleteMultipleDowntimeGuide([FromBody] List<int> ids)
+        {
+            var downtimeToDelete = await _context.DowntimeGuide.Where(p => ids.Contains(p.Id)).ToListAsync();
+
+            if (downtimeToDelete == null || downtimeToDelete.Count == 0)
+                return BadRequest("Downtime record not found.");
+
+            _context.DowntimeGuide.RemoveRange(downtimeToDelete);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Downtime records deleted successfully." });
+        }
     }
 }

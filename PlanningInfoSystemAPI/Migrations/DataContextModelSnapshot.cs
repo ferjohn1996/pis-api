@@ -430,6 +430,9 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<double?>("ChangeOver")
                         .HasColumnType("float");
 
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DelayStatus")
                         .HasColumnType("nvarchar(max)");
 
@@ -440,15 +443,15 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<int?>("DieSizeThickness")
                         .HasColumnType("int");
 
-                    b.Property<string>("DowntimeGuide")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double?>("EffectiveCapacity")
                         .HasColumnType("float");
 
                     b.Property<string>("Form")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModifiedDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("MT")
                         .HasColumnType("int");
@@ -464,6 +467,9 @@ namespace PlanningInfoSystemAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("TimeProduce")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Uncontrollable")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -490,6 +496,9 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<double?>("ChangeOver")
                         .HasColumnType("float");
 
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DelayStatus")
                         .HasColumnType("nvarchar(max)");
 
@@ -500,15 +509,15 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<int?>("DieSizeThickness")
                         .HasColumnType("int");
 
-                    b.Property<string>("DowntimeGuide")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double?>("EffectiveCapacity")
                         .HasColumnType("float");
 
                     b.Property<string>("Form")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModifiedDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("MT")
                         .HasColumnType("int");
@@ -524,6 +533,9 @@ namespace PlanningInfoSystemAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("TimeProduce")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Uncontrollable")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -550,6 +562,9 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<double?>("ChangeOver")
                         .HasColumnType("float");
 
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DelayStatus")
                         .HasColumnType("nvarchar(max)");
 
@@ -560,15 +575,15 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<int?>("DieSizeThickness")
                         .HasColumnType("int");
 
-                    b.Property<string>("DowntimeGuide")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double?>("EffectiveCapacity")
                         .HasColumnType("float");
 
                     b.Property<string>("Form")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModifiedDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("MT")
                         .HasColumnType("int");
@@ -584,6 +599,9 @@ namespace PlanningInfoSystemAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("TimeProduce")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Uncontrollable")
                         .HasColumnType("float");
 
                     b.HasKey("Id");

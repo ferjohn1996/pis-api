@@ -2,6 +2,7 @@
 {
     public class PlanningRequestResponseDTO
     {
+        public int Id { get; set; }
         public string PlanningBatchId { get; set; }
         public string Description { get; set; }
         public DateTime? CreatedDateTime { get; set; }
@@ -32,11 +33,13 @@
         public double? EffectiveCapacity { get; set; }
         public int? DieSizeThickness { get; set; }
         public double? ChangeOver { get; set; }
-        public string? DowntimeGuide { get; set; }
+        public double? Uncontrollable { get; set; }
         public string? Accountability { get; set; }
         public string? DelayStatus { get; set; }
         public double? TimeProduce { get; set; }
         public string? Remarks { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime LastModifiedDateTime { get; set; }
     }
 
     public class PlanningRequestLine2DTO
@@ -51,11 +54,13 @@
         public double? EffectiveCapacity { get; set; }
         public int? DieSizeThickness { get; set; }
         public double? ChangeOver { get; set; }
-        public string? DowntimeGuide { get; set; }
+        public double? Uncontrollable { get; set; }
         public string? Accountability { get; set; }
         public string? DelayStatus { get; set; }
         public double? TimeProduce { get; set; }
         public string? Remarks { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime LastModifiedDateTime { get; set; }
     }
 
     public class PlanningRequestLine3DTO
@@ -70,10 +75,12 @@
         public double? EffectiveCapacity { get; set; }
         public int? DieSizeThickness { get; set; }
         public double? ChangeOver { get; set; }
-        public string? DowntimeGuide { get; set; }
+        public double? Uncontrollable { get; set; }
         public string? Accountability { get; set; }
         public string? DelayStatus { get; set; }
         public double? TimeProduce { get; set; }
         public string? Remarks { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime LastModifiedDateTime { get; set; }
     }
 }

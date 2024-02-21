@@ -41,11 +41,13 @@ namespace PlanningInfoSystemAPI.Models.Planning
         public double? EffectiveCapacity { get; set; }
         public int? DieSizeThickness { get; set; }
         public double? ChangeOver { get; set; }
-        public string? DowntimeGuide { get; set; }
+        public double? Uncontrollable { get; set; }
         public string? Accountability { get; set; }
         public string? DelayStatus { get; set; }
         public double? TimeProduce { get; set; }
         public string? Remarks { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime LastModifiedDateTime { get; set; }
         public PlanningRequest Planning { get; set; }
     }
 
@@ -61,11 +63,13 @@ namespace PlanningInfoSystemAPI.Models.Planning
         public double? EffectiveCapacity { get; set; }
         public int? DieSizeThickness { get; set; }
         public double? ChangeOver { get; set; }
-        public string? DowntimeGuide { get; set; }
+        public double? Uncontrollable { get; set; }
         public string? Accountability { get; set; }
         public string? DelayStatus { get; set; }
         public double? TimeProduce { get; set; }
         public string? Remarks { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime LastModifiedDateTime { get; set; }
         public PlanningRequest Planning { get; set; }
     }
 
@@ -81,11 +85,13 @@ namespace PlanningInfoSystemAPI.Models.Planning
         public double? EffectiveCapacity { get; set; }
         public int? DieSizeThickness { get; set; }
         public double? ChangeOver { get; set; }
-        public string? DowntimeGuide { get; set; }
+        public double? Uncontrollable { get; set; }
         public string? Accountability { get; set; }
         public string? DelayStatus { get; set; }
         public double? TimeProduce { get; set; }
         public string? Remarks { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime LastModifiedDateTime { get; set; }
         public PlanningRequest Planning { get; set; }
     }
 }
