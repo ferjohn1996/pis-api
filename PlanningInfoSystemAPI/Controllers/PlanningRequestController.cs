@@ -34,29 +34,32 @@ namespace PlanningInfoSystemAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<PlanningRequestResponseDTO>>> GetPlanningList(string sortOrder = "asc")
         {
-            var data = await _context.PlanningRequest
-                //.Include(_ => _.Line1)
-                //.Include(_ => _.Line2)
-                //.Include(_ => _.Line3)
-                .ToListAsync();
+            var query = _context.PlanningRequest
+            //.Include(pr => pr.Line1)
+            //.Include(pr => pr.Line2)
+            //.Include(pr => pr.Line3)
+            .AsQueryable();
+
+            // Sort the data based on sortOrder
+            if (sortOrder.ToLower() == "desc")
+                query = query.OrderByDescending(x => x.Id);
+            else
+                query = query.OrderBy(x => x.Id);
+
+            var data = await query.ToListAsync();
 
             var response = data.Select(planning => new PlanningRequestDTO
             {
                 Id = planning.Id,
                 PlanningBatchId = planning.PlanningBatchId,
                 Description = planning.Description,
+                statusId = planning.statusId,
                 //Line1 = planning.Line1,
                 //Line2 = planning.Line2,
                 //Line3 = planning.Line3,
                 CreatedDateTime = planning.CreatedDateTime,
                 LastModifiedDateTime = planning.LastModifiedDateTime
             }).ToList();
-
-            // Sort the data based on sortOrder
-            if (sortOrder.ToLower() == "desc")
-                data = data.OrderByDescending(x => x.Id).ToList();
-            else
-                data = data.OrderBy(x => x.Id).ToList();
 
             return Ok(response);
         }
@@ -73,24 +76,46 @@ namespace PlanningInfoSystemAPI.Controllers
         public async Task<ActionResult<PlanningRequestDTO>> GetPlanningListById(int id)
         {
             var planning = await _context.PlanningRequest
-                .Include(_ => _.Line1)
-                .Include(_ => _.Line2)
-                .Include(_ => _.Line3)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            .Include(pr => pr.Line1)
+            .Include(pr => pr.Line2)
+            .Include(pr => pr.Line3)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
             if (planning == null)
             {
                 return NotFound(); // Return 404 if planning request with the provided ID is not found
             }
 
+            // Calculate LineTotalMT
+            double Line1TotalMT = planning.Line1.Sum(line => line.MT ?? 0);
+            double Line2TotalMT = planning.Line2.Sum(line => line.MT ?? 0);
+            double Line3TotalMT = planning.Line3.Sum(line => line.MT ?? 0);
+            // Calculate Time to Product
+            double Line1TotalTP = planning.Line1.Sum(line => line.TimeProduce ?? 0);
+            double Line2TotalTP = planning.Line2.Sum(line => line.TimeProduce ?? 0);
+            double Line3TotalTP = planning.Line3.Sum(line => line.TimeProduce ?? 0);
+            // Calculate TotalVolume
+            double TotalVolume = Line1TotalMT + Line2TotalMT + Line3TotalMT;
+            // Calculate TotalActual
+            double TotalActual = Line1TotalTP + Line2TotalTP + Line3TotalTP;
+
             var response = new PlanningRequestDTO
             {
                 Id = planning.Id,
                 PlanningBatchId = planning.PlanningBatchId,
                 Description = planning.Description,
+                statusId = planning.statusId,
                 Line1 = planning.Line1,
                 Line2 = planning.Line2,
                 Line3 = planning.Line3,
+                Line1TotalMT = Line1TotalMT,
+                Line2TotalMT = Line2TotalMT,
+                Line3TotalMT = Line3TotalMT,
+                Line1TotalTP = Line1TotalTP,
+                Line2TotalTP = Line2TotalTP,
+                Line3TotalTP = Line3TotalTP,
+                TotalVolume = TotalVolume,
+                TotalActual = TotalActual,
                 CreatedDateTime = planning.CreatedDateTime,
                 LastModifiedDateTime = planning.LastModifiedDateTime
             };
@@ -103,8 +128,14 @@ namespace PlanningInfoSystemAPI.Controllers
         {
             data.CreatedDateTime = DateTime.Now;
 
+            // Check if there are any records in the PlanningRequest table
+            var hasRecords = await _context.PlanningRequest.AnyAsync();
+
             // Determine the next available incrementing number for PlanningBatchId
-            var nextBatchIdNumber = await _context.PlanningRequest.MaxAsync(pr => pr.Id) + 1;
+            var nextBatchIdNumber = hasRecords ? await _context.PlanningRequest.MaxAsync(pr => pr.Id) + 1 : 1;
+
+            // Determine the next available incrementing number for PlanningBatchId
+            //var nextBatchIdNumber = await _context.PlanningRequest.MaxAsync(pr => pr.Id) + 1;
 
             // Format the PlanningBatchId
             data.PlanningBatchId = $"PB-{nextBatchIdNumber:D5}"; // Assuming you want 5 digits with leading zeros
@@ -196,6 +227,8 @@ namespace PlanningInfoSystemAPI.Controllers
         [Route("line1")]
         public async Task<ActionResult<PlanningRequestLine1DTO>> CreatePlanningLine1([FromBody] PlanningRequestLine1Tbl data)
         {
+            data.CreatedDateTime = DateTime.Now;
+
             // Assuming data.PlanningId is provided in the request body
             // Retrieve the corresponding PlanningRequest object from the database
             var parentPlanningRequest = await _context.PlanningRequest.FindAsync(data.PlanningId);
@@ -205,8 +238,10 @@ namespace PlanningInfoSystemAPI.Controllers
                 return BadRequest("Invalid PlanningId provided");
             }
             // Associate the child record with its parent
-            data.Planning = parentPlanningRequest;
+            data.PlanningId = parentPlanningRequest.Id;
 
+            // Add the child record to the parent's collection
+            parentPlanningRequest.Line1.Add(data);
 
             _context.PlanningRequestLine1Tbl.Add(data);
             await _context.SaveChangesAsync();
@@ -215,6 +250,7 @@ namespace PlanningInfoSystemAPI.Controllers
             {
                 PlanningId = data.PlanningId,
                 SKU = data.SKU,
+                SKUCode = data.SKUCode,
                 Description = data.Description,
                 Form = data.Form,
                 MT = data.MT,
@@ -226,28 +262,32 @@ namespace PlanningInfoSystemAPI.Controllers
                 Accountability = data.Accountability,
                 DelayStatus = data.DelayStatus,
                 TimeProduce = data.TimeProduce,
-                Remarks = data.Remarks
+                Remarks = data.Remarks,
+                CreatedDateTime = data.CreatedDateTime,
+                LastModifiedDateTime = data.LastModifiedDateTime
             };
             //return Ok(responseData);
             return Ok(new { Message = "Record added successfully.", Data = responseData });
         }
 
-        //[HttpGet("line1/{id}")]
-        //public async Task<ActionResult<PlanningRequestLine1DTO>> GetPlanningLine1(int id)
-        //{
-        //    var existingData = await _context.PlanningRequestLine1Tbl.FindAsync(id);
+        [HttpGet("line1/{id}")]
+        public async Task<ActionResult<PlanningRequestLine1Tbl>> GetPlanningLine1(int id)
+        {
+            var existingData = await _context.PlanningRequestLine1Tbl.FindAsync(id);
 
-        //    if (existingData == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (existingData == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(existingData);
-        //}
+            return Ok(existingData);
+        }
 
         [HttpPut("line1/{id}")]
         public async Task<ActionResult<PlanningRequestLine1DTO>> UpdatePlanningLine1(int id, [FromBody] PlanningRequestLine1Tbl updatedData)
         {
+            updatedData.LastModifiedDateTime = DateTime.Now;
+
             var existingData = await _context.PlanningRequestLine1Tbl.FindAsync(id);
 
             if (existingData == null)
@@ -257,6 +297,7 @@ namespace PlanningInfoSystemAPI.Controllers
 
             // Update properties of existingData with values from updatedData
             existingData.SKU = updatedData.SKU;
+            existingData.SKUCode = updatedData.SKUCode;
             existingData.Description = updatedData.Description;
             existingData.Form = updatedData.Form;
             existingData.MT = updatedData.MT;
@@ -269,6 +310,8 @@ namespace PlanningInfoSystemAPI.Controllers
             existingData.DelayStatus = updatedData.DelayStatus;
             existingData.TimeProduce = updatedData.TimeProduce;
             existingData.Remarks = updatedData.Remarks;
+            existingData.CreatedDateTime = updatedData.CreatedDateTime;
+            existingData.LastModifiedDateTime = updatedData.LastModifiedDateTime;
 
             // Save changes to the database
             await _context.SaveChangesAsync();
@@ -278,6 +321,7 @@ namespace PlanningInfoSystemAPI.Controllers
             {
                 PlanningId = existingData.PlanningId,
                 SKU = existingData.SKU,
+                SKUCode = existingData.SKUCode,
                 Description = existingData.Description,
                 Form = existingData.Form,
                 MT = existingData.MT,
@@ -289,7 +333,9 @@ namespace PlanningInfoSystemAPI.Controllers
                 Accountability = existingData.Accountability,
                 DelayStatus = existingData.DelayStatus,
                 TimeProduce = existingData.TimeProduce,
-                Remarks = existingData.Remarks
+                Remarks = existingData.Remarks,
+                CreatedDateTime = existingData.CreatedDateTime,
+                LastModifiedDateTime = existingData.LastModifiedDateTime
             };
             //return Ok(responseData);
             return Ok(new { Message = "Record updated successfully.", Data = responseData });
@@ -312,6 +358,8 @@ namespace PlanningInfoSystemAPI.Controllers
         [Route("line2")]
         public async Task<ActionResult<PlanningRequestLine2DTO>> CreatePlanningLine2([FromBody] PlanningRequestLine2Tbl data)
         {
+            data.CreatedDateTime = DateTime.Now;
+
             // Assuming data.PlanningId is provided in the request body
             // Retrieve the corresponding PlanningRequest object from the database
             var parentPlanningRequest = await _context.PlanningRequest.FindAsync(data.PlanningId);
@@ -321,8 +369,10 @@ namespace PlanningInfoSystemAPI.Controllers
                 return BadRequest("Invalid PlanningId provided");
             }
             // Associate the child record with its parent
-            data.Planning = parentPlanningRequest;
+            data.PlanningId = parentPlanningRequest.Id;
 
+            // Add the child record to the parent's collection
+            parentPlanningRequest.Line2.Add(data);
 
             _context.PlanningRequestLine2Tbl.Add(data);
             await _context.SaveChangesAsync();
@@ -331,6 +381,7 @@ namespace PlanningInfoSystemAPI.Controllers
             {
                 PlanningId = data.PlanningId,
                 SKU = data.SKU,
+                SKUCode = data.SKUCode,
                 Description = data.Description,
                 Form = data.Form,
                 MT = data.MT,
@@ -342,15 +393,32 @@ namespace PlanningInfoSystemAPI.Controllers
                 Accountability = data.Accountability,
                 DelayStatus = data.DelayStatus,
                 TimeProduce = data.TimeProduce,
-                Remarks = data.Remarks
+                Remarks = data.Remarks,
+                CreatedDateTime = data.CreatedDateTime,
+                LastModifiedDateTime = data.LastModifiedDateTime
             };
             //return Ok(responseData);
             return Ok(new { Message = "Record added successfully.", Data = responseData });
         }
 
+        [HttpGet("line2/{id}")]
+        public async Task<ActionResult<PlanningRequestLine2Tbl>> GetPlanningLine2(int id)
+        {
+            var existingData = await _context.PlanningRequestLine2Tbl.FindAsync(id);
+
+            if (existingData == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(existingData);
+        }
+
         [HttpPut("line2/{id}")]
         public async Task<ActionResult<PlanningRequestLine2DTO>> UpdatePlanningLine2(int id, [FromBody] PlanningRequestLine2Tbl updatedData)
         {
+            updatedData.LastModifiedDateTime = DateTime.Now;
+
             var existingData = await _context.PlanningRequestLine2Tbl.FindAsync(id);
 
             if (existingData == null)
@@ -360,6 +428,7 @@ namespace PlanningInfoSystemAPI.Controllers
 
             // Update properties of existingData with values from updatedData
             existingData.SKU = updatedData.SKU;
+            existingData.SKUCode = updatedData.SKUCode;
             existingData.Description = updatedData.Description;
             existingData.Form = updatedData.Form;
             existingData.MT = updatedData.MT;
@@ -372,6 +441,8 @@ namespace PlanningInfoSystemAPI.Controllers
             existingData.DelayStatus = updatedData.DelayStatus;
             existingData.TimeProduce = updatedData.TimeProduce;
             existingData.Remarks = updatedData.Remarks;
+            existingData.CreatedDateTime = updatedData.CreatedDateTime;
+            existingData.LastModifiedDateTime = updatedData.LastModifiedDateTime;
 
             // Save changes to the database
             await _context.SaveChangesAsync();
@@ -381,6 +452,7 @@ namespace PlanningInfoSystemAPI.Controllers
             {
                 PlanningId = existingData.PlanningId,
                 SKU = existingData.SKU,
+                SKUCode = existingData.SKUCode,
                 Description = existingData.Description,
                 Form = existingData.Form,
                 MT = existingData.MT,
@@ -392,10 +464,11 @@ namespace PlanningInfoSystemAPI.Controllers
                 Accountability = existingData.Accountability,
                 DelayStatus = existingData.DelayStatus,
                 TimeProduce = existingData.TimeProduce,
-                Remarks = existingData.Remarks
+                Remarks = existingData.Remarks,
+                CreatedDateTime = existingData.CreatedDateTime,
+                LastModifiedDateTime = existingData.LastModifiedDateTime
             };
-
-            // return Ok(responseData);
+            //return Ok(responseData);
             return Ok(new { Message = "Record updated successfully.", Data = responseData });
         }
 
@@ -408,8 +481,7 @@ namespace PlanningInfoSystemAPI.Controllers
 
             _context.PlanningRequestLine2Tbl.Remove(data);
             await _context.SaveChangesAsync();
-
-            // return Ok(await _context.PlanningRequestLine2Tbl.ToListAsync());
+            //return Ok(await _context.PlanningRequestLine2Tbl.ToListAsync());
             return Ok(new { Message = "Record deleted successfully." });
         }
 
@@ -417,6 +489,8 @@ namespace PlanningInfoSystemAPI.Controllers
         [Route("line3")]
         public async Task<ActionResult<PlanningRequestLine3DTO>> CreatePlanningLine3([FromBody] PlanningRequestLine3Tbl data)
         {
+            data.CreatedDateTime = DateTime.Now;
+
             // Assuming data.PlanningId is provided in the request body
             // Retrieve the corresponding PlanningRequest object from the database
             var parentPlanningRequest = await _context.PlanningRequest.FindAsync(data.PlanningId);
@@ -426,8 +500,10 @@ namespace PlanningInfoSystemAPI.Controllers
                 return BadRequest("Invalid PlanningId provided");
             }
             // Associate the child record with its parent
-            data.Planning = parentPlanningRequest;
+            data.PlanningId = parentPlanningRequest.Id;
 
+            // Add the child record to the parent's collection
+            parentPlanningRequest.Line3.Add(data);
 
             _context.PlanningRequestLine3Tbl.Add(data);
             await _context.SaveChangesAsync();
@@ -436,6 +512,7 @@ namespace PlanningInfoSystemAPI.Controllers
             {
                 PlanningId = data.PlanningId,
                 SKU = data.SKU,
+                SKUCode = data.SKUCode,
                 Description = data.Description,
                 Form = data.Form,
                 MT = data.MT,
@@ -447,14 +524,32 @@ namespace PlanningInfoSystemAPI.Controllers
                 Accountability = data.Accountability,
                 DelayStatus = data.DelayStatus,
                 TimeProduce = data.TimeProduce,
-                Remarks = data.Remarks
+                Remarks = data.Remarks,
+                CreatedDateTime = data.CreatedDateTime,
+                LastModifiedDateTime = data.LastModifiedDateTime
             };
+            //return Ok(responseData);
             return Ok(new { Message = "Record added successfully.", Data = responseData });
+        }
+
+        [HttpGet("line3/{id}")]
+        public async Task<ActionResult<PlanningRequestLine3Tbl>> GetPlanningLine3(int id)
+        {
+            var existingData = await _context.PlanningRequestLine3Tbl.FindAsync(id);
+
+            if (existingData == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(existingData);
         }
 
         [HttpPut("line3/{id}")]
         public async Task<ActionResult<PlanningRequestLine3DTO>> UpdatePlanningLine3(int id, [FromBody] PlanningRequestLine3Tbl updatedData)
         {
+            updatedData.LastModifiedDateTime = DateTime.Now;
+
             var existingData = await _context.PlanningRequestLine3Tbl.FindAsync(id);
 
             if (existingData == null)
@@ -464,6 +559,7 @@ namespace PlanningInfoSystemAPI.Controllers
 
             // Update properties of existingData with values from updatedData
             existingData.SKU = updatedData.SKU;
+            existingData.SKUCode = updatedData.SKUCode;
             existingData.Description = updatedData.Description;
             existingData.Form = updatedData.Form;
             existingData.MT = updatedData.MT;
@@ -476,6 +572,8 @@ namespace PlanningInfoSystemAPI.Controllers
             existingData.DelayStatus = updatedData.DelayStatus;
             existingData.TimeProduce = updatedData.TimeProduce;
             existingData.Remarks = updatedData.Remarks;
+            existingData.CreatedDateTime = updatedData.CreatedDateTime;
+            existingData.LastModifiedDateTime = updatedData.LastModifiedDateTime;
 
             // Save changes to the database
             await _context.SaveChangesAsync();
@@ -485,6 +583,7 @@ namespace PlanningInfoSystemAPI.Controllers
             {
                 PlanningId = existingData.PlanningId,
                 SKU = existingData.SKU,
+                SKUCode = existingData.SKUCode,
                 Description = existingData.Description,
                 Form = existingData.Form,
                 MT = existingData.MT,
@@ -496,9 +595,10 @@ namespace PlanningInfoSystemAPI.Controllers
                 Accountability = existingData.Accountability,
                 DelayStatus = existingData.DelayStatus,
                 TimeProduce = existingData.TimeProduce,
-                Remarks = existingData.Remarks
+                Remarks = existingData.Remarks,
+                CreatedDateTime = existingData.CreatedDateTime,
+                LastModifiedDateTime = existingData.LastModifiedDateTime
             };
-
             //return Ok(responseData);
             return Ok(new { Message = "Record updated successfully.", Data = responseData });
         }
@@ -512,8 +612,7 @@ namespace PlanningInfoSystemAPI.Controllers
 
             _context.PlanningRequestLine3Tbl.Remove(data);
             await _context.SaveChangesAsync();
-            // return Ok(await _context.PlanningRequestLine3Tbl.ToListAsync());
-            // return Ok(new { Message = "Downtime deleted successfully.", RemainingRecords = await _context.PlanningRequestLine3Tbl.ToListAsync() });
+            //return Ok(await _context.PlanningRequestLine3Tbl.ToListAsync());
             return Ok(new { Message = "Record deleted successfully." });
         }
     }

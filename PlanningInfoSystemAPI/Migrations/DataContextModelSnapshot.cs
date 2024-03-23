@@ -22,6 +22,208 @@ namespace PlanningInfoSystemAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
             modelBuilder.Entity("PlanningInfoSystemAPI.DowntimeGuide", b =>
                 {
                     b.Property<int>("Id")
@@ -61,11 +263,44 @@ namespace PlanningInfoSystemAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("BatchingId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("statusId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Batching");
+                });
+
+            modelBuilder.Entity("PlanningInfoSystemAPI.Models.Batching.Batching1", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<int?>("ActualTons")
                         .HasColumnType("int");
 
-                    b.Property<string>("BatchingId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("BatchId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BatchingId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Bin_To")
                         .HasColumnType("nvarchar(max)");
@@ -124,7 +359,7 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<double?>("MixProd_TotalHours")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("ProdDate")
+                    b.Property<DateTime?>("ProdDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ProdSchedule")
@@ -180,7 +415,144 @@ namespace PlanningInfoSystemAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Batching");
+                    b.HasIndex("BatchingId");
+
+                    b.ToTable("Batching1");
+                });
+
+            modelBuilder.Entity("PlanningInfoSystemAPI.Models.Batching.Batching2", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ActualTons")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BatchId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BatchingId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Bin_To")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Downtime_Accountability")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Downtime_Hours")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Downtime_Remarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Downtime_Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FeedCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FeedName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Forms")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Formula_Date")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Formula_Ver")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("HammerMill_screen1")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HammerMill_screen2")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("LastModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MixProd_STD")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("MixProd_TimeStart")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("MixProd_TimeStop")
+                        .HasColumnType("time");
+
+                    b.Property<double?>("MixProd_TonsHours")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("MixProd_TotalHours")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("ProdDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ProdSchedule")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProdTeam_Dump1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProdTeam_Dump2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProdTeam_Dump3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProdTeam_Optr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProdTeam_ShiftVisor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("ReworkAdd_Kilos")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ReworkAdd_LotId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Run_No")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Setup_BTC_Size")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Setup_Feedrate_max")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Setup_Feedrate_min")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Setup_H2O")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Setup_Motor_load")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Setup_NoBatches")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Setup_RPM")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sub_Batch")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BatchingId");
+
+                    b.ToTable("Batching2");
                 });
 
             modelBuilder.Entity("PlanningInfoSystemAPI.Models.Packing.Packing", b =>
@@ -404,9 +776,36 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<DateTime?>("LastModifiedDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<double?>("Line1TotalMT")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Line1TotalTP")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Line2TotalMT")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Line2TotalTP")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Line3TotalMT")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Line3TotalTP")
+                        .HasColumnType("float");
+
                     b.Property<string>("PlanningBatchId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("TotalActual")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("TotalVolume")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("statusId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -430,7 +829,7 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<double?>("ChangeOver")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("CreatedDateTime")
+                    b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DelayStatus")
@@ -450,7 +849,7 @@ namespace PlanningInfoSystemAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastModifiedDateTime")
+                    b.Property<DateTime?>("LastModifiedDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("MT")
@@ -459,10 +858,16 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<int>("PlanningId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PlanningRequestId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Remarks")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SKU")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SKUCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -474,7 +879,7 @@ namespace PlanningInfoSystemAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlanningId");
+                    b.HasIndex("PlanningRequestId");
 
                     b.ToTable("PlanningRequestLine1Tbl");
                 });
@@ -496,7 +901,7 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<double?>("ChangeOver")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("CreatedDateTime")
+                    b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DelayStatus")
@@ -516,7 +921,7 @@ namespace PlanningInfoSystemAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastModifiedDateTime")
+                    b.Property<DateTime?>("LastModifiedDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("MT")
@@ -525,10 +930,16 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<int>("PlanningId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PlanningRequestId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Remarks")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SKU")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SKUCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -540,7 +951,7 @@ namespace PlanningInfoSystemAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlanningId");
+                    b.HasIndex("PlanningRequestId");
 
                     b.ToTable("PlanningRequestLine2Tbl");
                 });
@@ -562,7 +973,7 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<double?>("ChangeOver")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("CreatedDateTime")
+                    b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DelayStatus")
@@ -582,7 +993,7 @@ namespace PlanningInfoSystemAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastModifiedDateTime")
+                    b.Property<DateTime?>("LastModifiedDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("MT")
@@ -591,10 +1002,16 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.Property<int>("PlanningId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PlanningRequestId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Remarks")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SKU")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SKUCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -606,7 +1023,7 @@ namespace PlanningInfoSystemAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlanningId");
+                    b.HasIndex("PlanningRequestId");
 
                     b.ToTable("PlanningRequestLine3Tbl");
                 });
@@ -638,37 +1055,97 @@ namespace PlanningInfoSystemAPI.Migrations
                     b.ToTable("ProductClassifications");
                 });
 
-            modelBuilder.Entity("PlanningInfoSystemAPI.Models.Planning.PlanningRequestLine1Tbl", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("PlanningInfoSystemAPI.Models.Planning.PlanningRequest", "Planning")
-                        .WithMany("Line1")
-                        .HasForeignKey("PlanningId")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Planning");
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PlanningInfoSystemAPI.Models.Batching.Batching1", b =>
+                {
+                    b.HasOne("PlanningInfoSystemAPI.Models.Batching.Batching", null)
+                        .WithMany("Batch1")
+                        .HasForeignKey("BatchingId");
+                });
+
+            modelBuilder.Entity("PlanningInfoSystemAPI.Models.Batching.Batching2", b =>
+                {
+                    b.HasOne("PlanningInfoSystemAPI.Models.Batching.Batching", null)
+                        .WithMany("Batch2")
+                        .HasForeignKey("BatchingId");
+                });
+
+            modelBuilder.Entity("PlanningInfoSystemAPI.Models.Planning.PlanningRequestLine1Tbl", b =>
+                {
+                    b.HasOne("PlanningInfoSystemAPI.Models.Planning.PlanningRequest", null)
+                        .WithMany("Line1")
+                        .HasForeignKey("PlanningRequestId");
                 });
 
             modelBuilder.Entity("PlanningInfoSystemAPI.Models.Planning.PlanningRequestLine2Tbl", b =>
                 {
-                    b.HasOne("PlanningInfoSystemAPI.Models.Planning.PlanningRequest", "Planning")
+                    b.HasOne("PlanningInfoSystemAPI.Models.Planning.PlanningRequest", null)
                         .WithMany("Line2")
-                        .HasForeignKey("PlanningId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Planning");
+                        .HasForeignKey("PlanningRequestId");
                 });
 
             modelBuilder.Entity("PlanningInfoSystemAPI.Models.Planning.PlanningRequestLine3Tbl", b =>
                 {
-                    b.HasOne("PlanningInfoSystemAPI.Models.Planning.PlanningRequest", "Planning")
+                    b.HasOne("PlanningInfoSystemAPI.Models.Planning.PlanningRequest", null)
                         .WithMany("Line3")
-                        .HasForeignKey("PlanningId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PlanningRequestId");
+                });
 
-                    b.Navigation("Planning");
+            modelBuilder.Entity("PlanningInfoSystemAPI.Models.Batching.Batching", b =>
+                {
+                    b.Navigation("Batch1");
+
+                    b.Navigation("Batch2");
                 });
 
             modelBuilder.Entity("PlanningInfoSystemAPI.Models.Planning.PlanningRequest", b =>

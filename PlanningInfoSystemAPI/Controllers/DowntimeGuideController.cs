@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlanningInfoSystemAPI.Data;
@@ -21,7 +22,7 @@ namespace PlanningInfoSystemAPI.Controllers
         //    return Ok(await _context.DowntimeGuide.ToListAsync());
         //}
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<DowntimeGuide>>> GetDowntimeGuide(string sortOrder = "asc")
         {
             var data = await _context.DowntimeGuide.ToListAsync();
