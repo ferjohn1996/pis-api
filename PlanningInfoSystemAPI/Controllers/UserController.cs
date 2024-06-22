@@ -9,6 +9,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
+using PlanningInfoSystemAPI.Models.Users;
+using Azure.Core;
 
 namespace PlanningInfoSystemAPI.Controllers;
 
@@ -16,101 +19,29 @@ namespace PlanningInfoSystemAPI.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly IConfiguration _configuration;
-    //private readonly JwtConfig _jwtconfig;
-
-    public UserController(
-        DataContext context,
-        UserManager<IdentityUser> userManager,        
-        IConfiguration configuration
-        //JwtConfig jwtconfig
-        )
+    private readonly DataContext _context;
+    public UserController(DataContext context)
     {
-        _userManager = userManager;
-        _configuration = configuration;
-        //_jwtconfig = jwtconfig;
+        _context = context;
     }
 
     [HttpPost]
-    [Route("Register")]
-    public async Task<IActionResult> Register([FromBody] UserTblDto data)
+    [Route("register")]
+    public async Task<ActionResult> CreateUser(UsersDto data)
     {
-        // Validate the incoming request
-        if (ModelState.IsValid)
-        {
-            // We need to check if the email already exist
-            var user_exist = await _userManager.FindByEmailAsync(data.Email);
+        data.CreatedDateTime = DateTime.Now;
 
-            if (user_exist != null)
-            {
-                return BadRequest(new AuthResult()
-                {
-                    Result = false,
-                    Errors = new List<string>()
-                    {
-                        "Email already exist"
-                    }
-                });
-            }
+        _context.tblUser.Add(data);
+        await _context.SaveChangesAsync();
 
-            // create a user
-            var new_user = new IdentityUser()
-            {
-                Email = data.Email,
-                UserName = data.Email
-            };
-
-            var is_created = await _userManager.CreateAsync(new_user, data.Password);
-
-            if (is_created.Succeeded)
-            {
-                // Generate the token
-                var token = GenerateJwtToken(new_user);
-
-                return Ok(new AuthResult()
-                {
-                    Result = true,
-                    Token = token
-                });
-            }
-
-            return BadRequest(new AuthResult()
-            {
-                Errors = new List<string>()
-                {
-                    "Server Error"
-                },
-                Result = false
-            });
-        }
-
-        return BadRequest();
+        return Ok(new { Message = "User record created successfully." });
     }
 
-    private string GenerateJwtToken(IdentityUser user)
+    [HttpGet]
+    public async Task<ActionResult<List<UsersDto>>> GetUsersList()
     {
-        var jwtTokenHandler = new JwtSecurityTokenHandler();
-
-        //var key = Encoding.UTF8.GetBytes(_jwtconfig.Secret);
-        var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
-
-        var tokenDescriptor = new SecurityTokenDescriptor()
-        {
-            Subject = new ClaimsIdentity(new []
-            {
-                new Claim("Id", user.Id),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Email, value:user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
-            }),
-
-            Expires = DateTime.Now.AddHours(1),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-        };
-
-        var token = jwtTokenHandler.CreateToken(tokenDescriptor);
-        return jwtTokenHandler.WriteToken(token);
+        return Ok(await _context.tblUser.ToListAsync());
     }
+
+
 }

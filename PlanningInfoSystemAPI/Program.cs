@@ -23,11 +23,22 @@ builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddCors(options => options.AddPolicy(name: "PlanningInfoSystemOrigin",
-    policy =>
-    {
-        policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
-    }));
+//builder.Services.AddCors(options => options.AddPolicy("PlanningInfoSystemOrigin",
+//    builder =>
+//    {
+//        builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+//    }));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PlanningInfoSystemOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:4200")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
 
 builder.Services.AddSwaggerGen(options =>
 {

@@ -5,6 +5,7 @@ using PlanningInfoSystemAPI.Models.Packing;
 using PlanningInfoSystemAPI.Models.Pelleting;
 using PlanningInfoSystemAPI.Models.Planning;
 using PlanningInfoSystemAPI.Models.User;
+using PlanningInfoSystemAPI.Models.Users;
 
 namespace PlanningInfoSystemAPI.Data
 {
@@ -26,8 +27,7 @@ namespace PlanningInfoSystemAPI.Data
 
         public DbSet<Pelleting> Pelleting { get; set; }
         public DbSet<Packing> Packing { get; set; }
-
-        //public DbSet<UserTbl> User { get; set; }
+        public DbSet<UsersDto> tblUser { get; set; }
 
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -22,7 +22,7 @@ namespace PlanningInfoSystemAPI.Controllers
         //    return Ok(await _context.DowntimeGuide.ToListAsync());
         //}
 
-        [HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet] //[HttpGet, Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<DowntimeGuide>>> GetDowntimeGuide(string sortOrder = "asc")
         {
             var data = await _context.DowntimeGuide.ToListAsync();

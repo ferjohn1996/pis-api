@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Users\fpestoque\APIs\PlanningInfoSystemAPI_v2\pis-api\PlanningInfoSystemAPI\bin\Release\net6.0\publish\</_PublishTargetUrl>
+    <History>True|2024-04-04T08:01:05.5894825Z;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="Authentication:Schemes:Bearer:SigningKeys:0:Id">
+      <Value>03d810a6</Value>
+    </DestinationConnectionStrings>
+    <DestinationConnectionStrings Include="Authentication:Schemes:Bearer:SigningKeys:0:Issuer">
+      <Value>03d810a6</Value>
+    </DestinationConnectionStrings>
+    <DestinationConnectionStrings Include="Authentication:Schemes:Bearer:SigningKeys:0:Length">
+      <Value>03d810a6</Value>
+    </DestinationConnectionStrings>
+    <DestinationConnectionStrings Include="Authentication:Schemes:Bearer:SigningKeys:0:Value">
+      <Value>03d810a6</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

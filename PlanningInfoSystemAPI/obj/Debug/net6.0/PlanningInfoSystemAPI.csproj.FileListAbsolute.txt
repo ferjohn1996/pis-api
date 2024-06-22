@@ -204,3 +204,7 @@ C:\Users\fpestoque\APIs\PlanningInfoSystemAPI_v2\pis-api\PlanningInfoSystemAPI\b
 C:\Users\fpestoque\APIs\PlanningInfoSystemAPI_v2\pis-api\PlanningInfoSystemAPI\bin\Debug\net6.0\Scrutor.dll
 C:\Users\fpestoque\APIs\PlanningInfoSystemAPI_v2\pis-api\PlanningInfoSystemAPI\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.dll
 C:\Users\fpestoque\APIs\PlanningInfoSystemAPI_v2\pis-api\PlanningInfoSystemAPI\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+C:\Users\fpestoque\APIs\PlanningInfoSystemAPI_v2\pis-api\PlanningInfoSystemAPI\bin\Debug\net6.0\System.Web.Cors.dll
+C:\Users\fpestoque\APIs\PlanningInfoSystemAPI_v2\pis-api\PlanningInfoSystemAPI\bin\Debug\net6.0\System.Net.Http.Formatting.dll
+C:\Users\fpestoque\APIs\PlanningInfoSystemAPI_v2\pis-api\PlanningInfoSystemAPI\bin\Debug\net6.0\System.Web.Http.dll
+C:\Users\fpestoque\APIs\PlanningInfoSystemAPI_v2\pis-api\PlanningInfoSystemAPI\bin\Debug\net6.0\System.Web.Http.Cors.dll
